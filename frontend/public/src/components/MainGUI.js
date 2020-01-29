@@ -13,13 +13,13 @@ export default class MainGUI extends React.Component{
           <div className="headerplace">
             <Header/>
           </div>
-          <div className="global-tfc controlpanelplace">
+          <div className="controlpanelplace">
             <ControlPanel/>
           </div>
-          <div className="global-tfc subcontrolpanelplace">
+          <div className="subcontrolpanelplace">
             <ChooseDate/>
           </div>
-          <div className="global-tfc calendarplace">
+          <div className="calendarplace">
             <Calendar />
           </div>
         </div>
