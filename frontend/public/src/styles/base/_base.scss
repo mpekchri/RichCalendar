@@ -1,5 +1,5 @@
 html{
-    font-size: 62.5%;
+    font-size: 80%;
     height: 100%;
     width: 100%;
     min-height: 100%;
@@ -8,7 +8,7 @@ html{
 body {
     font-family: Arial,'Franklin Gothic Medium', 'Arial Narrow', 'Roboto' , sans-serif;
     font-style: normal;
-    font-weight: normal;
+    font-weight: 400;
     font-size: $body_size;
     letter-spacing: 0.25px;
     background: $body_background;
@@ -22,4 +22,12 @@ button{
 
 button:disabled{
     cursor: default;
+}
+
+
+// Global rules
+.global-tfc{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }

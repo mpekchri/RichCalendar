@@ -1,11 +1,11 @@
 import React from 'react';
 
 
-export default class MainApp extends React.Component{
+export default class DayGUI extends React.Component{
     render() {
       return(
         <div>
-          Hello fucking world
+          DayGUI
         </div>
       )
     }
