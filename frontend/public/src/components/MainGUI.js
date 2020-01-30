@@ -19,11 +19,15 @@ export default class MainGUI extends React.Component{
           <div className="subcontrolpanelplace">
             <ChooseDate/>
           </div>
-          <div className="calendarplace">
+          <div ref="calendarContainerRef" className="calendarplace" style={{height:this.calculateCalendarHeight()}}>
             <Calendar />
           </div>
         </div>
       )
     }
 
+    calculateCalendarHeight(){
+      // TO-DO : make this dynamic 
+      return '70%';
+    }
 }

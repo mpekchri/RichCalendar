@@ -6,12 +6,13 @@ import DayGUI from './DayGUI';
 export default class CalendarGUI extends React.Component{
     render() {
       return(
-        <div>
-          CalendarGUI <br/>
+        <div className="calendarContainer">
+          {/*CalendarGUI <br/>
           -------------
           <MonthGUI/>
           or
-          <DayGUI />
+          <DayGUI />*/}
+          <MonthGUI/>
         </div>
       )
     }
