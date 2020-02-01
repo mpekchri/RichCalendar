@@ -4,30 +4,20 @@ import '../styles/components/dayofmonth.scss';
 
 export default class MonthGUI extends React.Component{
     render() {
-      const dayNumber = '05';
-      const dailyTasks = [
-        {
-          displayOrder:1,
-          priority:'HST',
-          taskName:'Some task name'
-        },
-        {
-          displayOrder:1,
-          priority:'L',
-          taskName:'Well, another one task name'
-        },
-      ]
+      const data = this.props.dayData;
+      const dayNumber = data.dayNumber;
+      const dailyTasks = data. tasks;
       return(
         <div className="singledayofmonthcontainer">
-          <div className="daylayer0 activeday">
+          <div className={"daylayer0 ".concat(this.classNameForDayColoring(data))} >
             <div className="daynumbertext">{dayNumber}</div>
           </div>
           <div className="daylayer1">
             {
-              dailyTasks.map((task)=>{
+              dailyTasks.map((task,index)=>{
                 return(
-                  <div className="dailyTask" style={{background:this.colorTask(task.priority)}}>
-                    <div>{task.taskName}</div>
+                  <div className="dailyTask" style={{background:this.colorTask(task.priority)}} key={'taskDispOrder - '.concat(index)}>
+                    {task.name.length > 0 ? <div>{task.name}</div> : <div>&nbsp;</div>}
                   </div>
                 )
               })
@@ -50,5 +40,17 @@ export default class MonthGUI extends React.Component{
       }else if(priority==='R'){
         return 'rgb(221, 213, 100)';
       }
+    }
+
+
+    classNameForDayColoring(dayData){
+      let dayClassName = 'nonactiveday';
+      if(dayData.isActive){
+        dayClassName='activeday';
+      }
+      if(dayData.isCurrent){
+        dayClassName='currentday';
+      }
+      return dayClassName;
     }
 }
