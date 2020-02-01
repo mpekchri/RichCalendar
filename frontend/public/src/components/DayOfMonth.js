@@ -8,7 +8,7 @@ export default class MonthGUI extends React.Component{
       const dayNumber = data.dayNumber;
       const dailyTasks = data. tasks;
       return(
-        <div className="singledayofmonthcontainer">
+        <div className="singledayofmonthcontainer" onClick={this.dayClicked}>
           <div className={"daylayer0 ".concat(this.classNameForDayColoring(data))} >
             <div className="daynumbertext">{dayNumber}</div>
           </div>
@@ -16,7 +16,11 @@ export default class MonthGUI extends React.Component{
             {
               dailyTasks.map((task,index)=>{
                 return(
-                  <div className="dailyTask" style={{background:this.colorTask(task.priority)}} key={'taskDispOrder - '.concat(index)}>
+                  <div className="dailyTask" 
+                    style={{background:this.colorTask(task.priority)}} 
+                    key={'taskDispOrder - '.concat(index)}
+                    onClick={this.taskClicked}
+                  >
                     {task.name.length > 0 ? <div>{task.name}</div> : <div>&nbsp;</div>}
                   </div>
                 )
@@ -25,6 +29,16 @@ export default class MonthGUI extends React.Component{
           </div>
         </div>
       )
+    }
+
+
+    dayClicked(e){
+      console.log('day clicked')}
+
+
+    taskClicked(e){
+      e.stopPropagation();
+      console.log('task clicked')
     }
 
 
