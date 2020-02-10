@@ -8,45 +8,40 @@ import copy
 class CalendarStore:
     def __init__(self, yearCalendarState=None, monthCalendarState=None, dayCalendarState=None):
         self.yearCalendarState = yearCalendarState
-        self.yearCalendarState = monthCalendarState
-        self.yearCalendarState = dayCalendarState
+        self.monthCalendarState = monthCalendarState
+        self.dayCalendarState = dayCalendarState
 
 
 class MonthCalendarState:
     def __init__(self, tasks, selectedDate):
-        # if dayBoundaryElements is not None:
-        #     self.dayBoundaryElements = dayBoundaryElements
-        # else:
-        #     self.dayBoundaryElements = []
+        self.dayBoundaryElements = []
         c = calendar.Calendar(calendar.MONDAY)
-        days = getDayDatesOfMonth(selectedDate)
+        days = self.getDayDatesOfMonth(selectedDate=selectedDate)
         if len(days) != 42:
             if selectedDate.month == 12:
                 nextMonth = 1
             else:
                 nextMonth = selectedDate.month+1
-            nextMonthsDays = getDayDatesOfMonth(selectedDate.replace(month=nextMonth), onlySpecifiedMonth=True)
+            nextMonthsDays = self.getDayDatesOfMonth(selectedDate.replace(month=nextMonth), onlySpecifiedMonth=True)
             days.extend(nextMonthsDays)
         
         # Create proper task-in-days array, using addTasksIntoDays :
-        dayDatesWithTasks = addTasksIntoDays(tasks, days)
+        dayDatesWithTasks = self.addTasksIntoDays(tasks, days)
         
-        dayBoundaryElements = []
         for index, d in enumerate(dayDatesWithTasks):
             newEl = DayBoundaryElement(
                 dayOrder=index+1,
                 dayNumber=d['date'].day,
                 isActive=(d['date'].month == datetime.now().month),
                 isCurrentDay=(d['date'].day == datetime.now().day),
-                visibleTasks=d['date']['tasks'],
+                visibleTasks=d['tasks'],
                 containsMoreThan2Events=d['hasMoreThan2Tasks']
 
             )
-            dayBoundaryElements.append(newEl)
-        self.dayBoundaryElements = dayBoundaryElements
+            self.dayBoundaryElements.append(newEl)
 
 
-    def getDayDatesOfMonth(selectedDate,onlySpecifiedMonth=False):
+    def getDayDatesOfMonth(self, selectedDate,onlySpecifiedMonth=False):
         c = calendar.Calendar(calendar.MONDAY)
         dates = []
         for dayDate in c.itermonthdates(selectedDate.year, selectedDate.month):
@@ -56,7 +51,7 @@ class MonthCalendarState:
         return dates
 
 
-    def addTasksIntoDays(tasks, dayDates):
+    def addTasksIntoDays(self, tasks, dayDates):
         # first sort tasks based on their time range (desc)
         sortedTasks = copy.deepcopy(tasks)
         for t in sortedTasks:
@@ -65,7 +60,7 @@ class MonthCalendarState:
             if t.toDate > dayDates[len(dayDates)-1]:
                 t.toDate = dayDates[len(dayDates)-1]
             setattr(t, 'timeRange', (t.toDate - t.fromDate).seconds)
-        sortedTasks = sorted(tasks, key=lambda t: t.timeRange, reverse=True)
+        sortedTasks = sorted(sortedTasks, key=lambda t: t.timeRange, reverse=True)
         # then add tasks to dates, beggining from the tasks with the biggest duration
         daysWithTasks = []
         for index,d in enumerate(dayDates):

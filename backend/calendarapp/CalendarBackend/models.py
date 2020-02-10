@@ -101,9 +101,9 @@ class CustomEnums(models.Model):
 
 # Create your models here.
 class DomainModel(models.Model):
-    actions = models.ForeignKey('Action', on_delete=models.CASCADE)
+    actions = models.ForeignKey('Action', on_delete=models.CASCADE, null=True)
     currentState = models.OneToOneField('State', on_delete=models.CASCADE)
-    prevStates = models.ForeignKey('State', on_delete=models.CASCADE, related_name='+')
+    prevStates = models.ForeignKey('State', on_delete=models.CASCADE, related_name='+', null=True)
 
 
 class Action(models.Model):
@@ -115,9 +115,9 @@ class Action(models.Model):
 
 
 class State(models.Model):
-    tasks = models.ForeignKey('Task', on_delete=models.CASCADE)
-    groups = models.ForeignKey('Group', on_delete=models.CASCADE)
-    users = models.ForeignKey('User', on_delete=models.CASCADE)
+    tasks = models.ManyToManyField('Task', related_name='state')
+    groups = models.ManyToManyField('Group', related_name='state')
+    users = models.ManyToManyField('User', related_name='state')
 
     def applyFilters_getMonth(self, filters, searchText, selectedDate, user):
         if filters is None:
@@ -127,7 +127,7 @@ class State(models.Model):
                 else:
                     date = selectedDate
                 monthDayRange = calendar.monthrange(date.year, date.month)
-                tasks = getTasksInRange(startDate=date.replace(day=monthDayRange[0]),endDate=date.replace(day=monthDayRange[1]))
+                tasks = self.getTasksInRange(startDate=date.replace(day=monthDayRange[0]),endDate=date.replace(day=monthDayRange[1]))
                 return tasks
             else:
                 pass
@@ -136,7 +136,9 @@ class State(models.Model):
 
 
     def getTasksInRange(self, startDate,endDate):
-        tasks = self.tasks.filter(fromDate >= startDate, toDate <= endDate)
+        # tasks = self.tasks.filter(fromDate >= startDate, toDate <= endDate)
+        tasks = list(filter( lambda t: t.fromDate >= startDate and t.toDate <= endDate , self.tasks.all()))
+        return tasks
 
 
 class Task(models.Model):
@@ -146,8 +148,8 @@ class Task(models.Model):
     visibility = models.CharField(choices=CustomEnums.TASK_VISIBILITY,max_length=130)
     status = models.CharField(choices=CustomEnums.TASK_STATUS,max_length=130)
     priority = models.CharField(choices=CustomEnums.TASK_PRIORITY,max_length=130)
-    createdBy = models.ForeignKey('User', related_name='tasks', on_delete=models.CASCADE)
-    name = models.CharField(unique=True,max_length=130)
+    createdBy = models.ForeignKey('User', related_name='tasks', on_delete=models.CASCADE, null=True)
+    name = models.CharField(unique=True,max_length=130, default="taskname")
 
 
 class Group(models.Model):

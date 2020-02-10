@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from datetime import datetime
 from rest_framework import status
 from CalendarBackend.controllers.controllers import BackendMainController
-from .models import CalendarStore,MonthCalendarState
+from .models import CalendarStore, MonthCalendarState
 from . import serializers
 from rest_framework.renderers import JSONRenderer
 
@@ -31,10 +31,10 @@ class Filters(APIView):
             initialLoad = parameters['initialLoad']
             if calendarView == "Month":
                 filterObject = request.data
-                if filterObject['selectedDate'] is None:
-                    selectedDate = datetime.now().date()
-                else:
+                try :
                     selectedDate = filterObject['selectedDate']
+                except:
+                    selectedDate = datetime.now().date()
                 tasks = BackendMainController.loadMonthTasks(
                     filters=None,
                     searchText=None,
@@ -42,9 +42,9 @@ class Filters(APIView):
                     user=request.user
                 )
                 monthCalendarState = MonthCalendarState(tasks=tasks,selectedDate=selectedDate)
-                calendar = CalendarStore(monthCalendarState=MonthCalendarState)
-                calendarObject = serializers.CalendarSerializer(calendar)
-                jsonCalendar = JSONRenderer().render(calendarObject)
+                calendar = CalendarStore(monthCalendarState=monthCalendarState)
+                calendarSerializer = serializers.CalendarSerializer(calendar)
+                jsonCalendar = JSONRenderer().render(calendarSerializer.data)
                 return Response(jsonCalendar,status=status.HTTP_501_NOT_IMPLEMENTED)
             else:
                 return Response(status=status.HTTP_501_NOT_IMPLEMENTED)

@@ -12,7 +12,7 @@ class DayBoundaryElementSerializer(serializers.Serializer):
     dayNumber = serializers.IntegerField()
     isActive = serializers.BooleanField()
     isCurrentDay = serializers.BooleanField()
-    containsMoreThan3Events = serializers.BooleanField()
+    containsMoreThan2Events = serializers.BooleanField()
     visibleTasks = MonthTaskBoundaryElementSerializer(many=True)
 
 
@@ -21,4 +21,4 @@ class MonthCalendarStateSerializer(serializers.Serializer):
 
 
 class CalendarSerializer(serializers.Serializer):
-    monthCalendarState = MonthCalendarStateSerializer(many=False)
+    monthCalendarState = MonthCalendarStateSerializer()
