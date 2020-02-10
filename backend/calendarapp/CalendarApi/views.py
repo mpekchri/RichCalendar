@@ -45,7 +45,7 @@ class Filters(APIView):
                 calendar = CalendarStore(monthCalendarState=monthCalendarState)
                 calendarSerializer = serializers.CalendarSerializer(calendar)
                 jsonCalendar = JSONRenderer().render(calendarSerializer.data)
-                return Response(jsonCalendar,status=status.HTTP_501_NOT_IMPLEMENTED)
+                return Response(jsonCalendar,status=status.HTTP_200_OK)
             else:
                 return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
         else:
