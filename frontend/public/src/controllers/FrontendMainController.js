@@ -7,14 +7,14 @@ export function login(username, password){
         baseURL:base_url,
         timeout: timeout,
         headers: {
-            'Content-Type':'application/json'
+            'Content-Type':'application/json',
         }
     });
     const data = {
         username: username,
         password: password
     }
-    const url = '/auth-api/login';
+    const url = '/auth-api/login/';
     return axiosInstance.post(url, data);
 }
 

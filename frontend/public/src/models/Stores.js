@@ -37,11 +37,11 @@ const MainStore = types
       // }
       try{
         let response = yield controllerLogin(username,password);
-        token = response.token;
+        let token = response.data.token;
         if(token){
           self.authStore.setToken(token);
         }
-        print(token);
+        // console.log(token);
       }catch(error){
         console.log("Error : Store.js -- MainStore -- actions -- login : ".concat(error) )
       }

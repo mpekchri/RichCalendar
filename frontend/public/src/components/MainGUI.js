@@ -11,11 +11,11 @@ import '../styles/components/maingui.scss';import {observer, inject} from "mobx-
 @observer
 export default class MainGUI extends React.Component{
     render() {
-      const {store} = this.props;
-      if(store.initialLoad){
-        store.login("dummyAdmin","1QJhbiLQiLC1QiJhbGci").then(()=>{
-          store.loadCalendar().then(()=>{
-            store.setInitialLoad(false);
+      const {mainStore} = this.props;
+      if(mainStore.initialLoad){
+        mainStore.login("dummyAdmin","1QJhbiLQiLC1QiJhbGci").then(()=>{
+          mainStore.loadCalendar().then(()=>{
+            mainStore.setInitialLoad(false);
           })
         })
         return(
