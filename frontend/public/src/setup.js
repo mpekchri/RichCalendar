@@ -2,24 +2,42 @@ import {MainStore} from './models/Stores';
 import { onSnapshot, getSnapshot, applySnapshot } from 'mobx-state-tree';
 
 
-export const setupStore = () => {
-    const jsonData = {
-        initialLoad:true,
-        calendarStore:{
-            monthCalendar:{
-                days:createDays()
-            }
-        },
-        navOptionsStore: {
-            currentDate: new Date(),
-            selectedView: 'Month',
-        },
-        authStore: {
-            username: 'geparxosbro'
-        },
-    };
-    const store = MainStore.create(jsonData);
-    return store;
+export const setupStore = (useDummyData=true) => {
+    if(useDummyData){
+        const jsonData = {
+            initialLoad:true,
+            calendarStore:{
+                monthCalendar:{
+                    days:createDays()
+                }
+            },
+            navOptionsStore: {
+                currentDate: new Date(),
+                selectedView: 'Month',
+            },
+            authStore: {
+                username: 'geparxosbro',
+                password:'1QJhbiLQiLC1QiJhbGci'
+            },
+        };
+        const store = MainStore.create(jsonData);
+        return store;
+    }else{
+        const jsonData = {
+            initialLoad:true,
+            calendarStore:{},
+            navOptionsStore: {
+                currentDate: new Date(),
+                selectedView: 'Month',
+            },
+            authStore: {
+                username: 'dummyAdmin',
+                password:'1QJhbiLQiLC1QiJhbGci'
+            },
+        };
+        const store = MainStore.create(jsonData);
+        return store;
+    }  
 }
 
 

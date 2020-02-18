@@ -1,4 +1,7 @@
 import { types, getParent, destroy } from 'mobx-state-tree';
+import {login as controllerLogin, loadMonthCalendar as controllerLoadMonthCalendar} from '../controllers/FrontendMainController';
+import { flow } from "mobx-state-tree";
+import { autorun } from "mobx";
 
 
 const MainStore = types
@@ -7,19 +10,73 @@ const MainStore = types
     calendarStore: types.maybeNull(types.late(() => CalendarStore)),
     navOptionsStore: types.maybeNull(types.late(() => NavOptionsStore)),
     authStore: types.maybeNull(types.late(() => AuthStore)),
+    dataBeingFetched: types.optional(types.boolean, false),
   })
-  // .actions(self =>({
-  //   actionName(args){
-  //     // some functionality
-  //   },
-  // }))
+  .actions(self =>({
+    setDataBeingFetched(booleanValue){
+      self.dataBeingFetched = booleanValue;
+    },
+
+    // ASYNC ACTIONS 
+    login : flow(function* login(username,password){
+      // if(self.initialLoad == true && self.authStore.token == null){
+      //   // if user is not logged in AND data have not been loaded, then :
+      //   try{
+      //     let response = yield controllerLogin(usrname,password);
+      //     token = response.token;
+      //     if(token){
+      //       self.authStore.setToken(token);
+      //     }
+      //     print(token);
+      //   }catch(error){
+      //     console.log("Error : Store.js -- MainStore -- actions -- login : ".concat(error) )
+      //   }
+      // }else{
+      //   // TO-DO
+      //   console.log("Warning : Store.js -- MainStore -- actions -- login : Not yet implemented")
+      // }
+      try{
+        let response = yield controllerLogin(username,password);
+        token = response.token;
+        if(token){
+          self.authStore.setToken(token);
+        }
+        print(token);
+      }catch(error){
+        console.log("Error : Store.js -- MainStore -- actions -- login : ".concat(error) )
+      }
+    }),
+
+    loadCalendar: flow(function* loadCalendar(){
+      if(self.navOptionsStore.selectedView == 'Month'){
+        self.setDataBeingFetched(true);
+        let response = yield controllerLoadMonthCalendar(
+          self.authStore.token,
+          undefined, // filters = undefined,
+          undefined, // searchText = undefined,
+          undefined, // selectedDate = undefined
+          self.initialLoad
+        );
+        // self.setDataBeingFetched(false);
+        console.log(response)
+      }else{
+        // TO-DO
+      }      
+    })
+  }))
 
 
 const AuthStore = types
   .model({
     token: types.maybeNull(types.string),
-    username: types.string
+    username: types.string,
+    password:types.string,
   })
+  .actions(self =>({
+    setToken(token){
+      self.token = token;
+    },
+  }))
 
 
 const NavOptionsStore = types
@@ -62,3 +119,9 @@ const MonthTaskBoundaryElement = types
 
   
 export {MainStore, CalendarStore, MonthCalendarState, AuthStore, NavOptionsStore};
+
+
+// // Listen for changes
+// autorun(() => {
+  
+// })

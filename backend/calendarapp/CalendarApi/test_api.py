@@ -9,8 +9,8 @@ from datetime import datetime
 class CalendarApiTestCase(APITestCase):
     def setUp(self):
         # Initial state goes here
-        user = models.User(name="geparxos")
-        user.set_password('1230852456')
+        user = models.User(name="dummyAdmin")
+        user.set_password('1QJhbiLQiLC1QiJhbGci')
         user.save()
         domainModel = models.DomainModel()
         state = models.State()
@@ -67,22 +67,21 @@ class CalendarApiTestCase(APITestCase):
     def test_MonthCalendar_noFilters_noSearchText_noSelectedDate(self):
         url = api_reverse("AuthApi:login")
         data = {
-            "username":"geparxos",
-            "password":"1230852456"
+            "username":"dummyAdmin",
+            "password":"1QJhbiLQiLC1QiJhbGci"
         }
         response = self.client.post(url, data, format='json')
         token = response.data['token']
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # print(token)
         # filter post
         url = api_reverse("CalendarApi:filters")
-        data = {
-            "initialLoad":False,
-            "calendarView":"Month"
-        }
+        # data = {
+        #     "initialLoad":False,
+        #     "calendarView":"Month"
+        # }
         headers = {'Authorization': 'Token '+token}
         # params = {"initialLoad":False,"calendarView":"Month"}
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
-        response = self.client.post(url, data, format='json', **{'QUERY_STRING': 'initialLoad=false&calendarView=Month'})
+        response = self.client.post(url, {}, format='json', **{'QUERY_STRING': 'initialLoad=false&calendarView=Month'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # print(response.data)
+        print(response.data)

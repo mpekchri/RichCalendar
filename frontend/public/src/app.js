@@ -13,7 +13,7 @@ let appRoot = document.getElementById("app");
 
 // let template = (<MainGUI />);
 let template = (
-    <Provider mainStore = {setupStore()} >
+    <Provider mainStore = {setupStore(false)} >
         <MainGUI />
     </Provider>
 );
