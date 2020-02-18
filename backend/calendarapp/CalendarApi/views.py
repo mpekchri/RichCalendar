@@ -31,10 +31,8 @@ class Filters(APIView):
             initialLoad = parameters['initialLoad']
             if calendarView == "Month":
                 filterObject = request.data
-                try :
-                    selectedDate = filterObject['selectedDate']
-                except:
-                    selectedDate = datetime.now().date()
+                selectedDate = filterObject['selectedDate'] if filterObject['selectedDate'] is not None else datetime.now().date()
+                # print(selectedDate)
                 tasks = BackendMainController.loadMonthTasks(
                     filters=None,
                     searchText=None,
