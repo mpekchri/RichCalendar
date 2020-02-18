@@ -2,6 +2,7 @@ import { types, getParent, destroy } from 'mobx-state-tree';
 import {login as controllerLogin, loadMonthCalendar as controllerLoadMonthCalendar} from '../controllers/FrontendMainController';
 import { flow } from "mobx-state-tree";
 import { autorun } from "mobx";
+import { applySnapshot } from 'mobx-state-tree';
 
 
 const MainStore = types
@@ -15,6 +16,9 @@ const MainStore = types
   .actions(self =>({
     setDataBeingFetched(booleanValue){
       self.dataBeingFetched = booleanValue;
+    },    
+    setInitialLoad(booleanValue){
+      self.initialLoad = booleanValue;
     },
 
     // ASYNC ACTIONS 
@@ -57,11 +61,14 @@ const MainStore = types
           undefined, // selectedDate = undefined
           self.initialLoad
         );
-        // self.setDataBeingFetched(false);
-        console.log(response)
+        let calendarData = JSON.parse(response.data);
+        console.log(calendarData)
+        self.calendarStore.setMonthCalendar(calendarData.monthCalendarState);
+        // console.log(self.calendarStore.monthCalendarState)
+        self.setDataBeingFetched(false);
       }else{
         // TO-DO
-      }      
+      }
     })
   }))
 
@@ -89,13 +96,19 @@ const NavOptionsStore = types
 
 const CalendarStore = types
   .model({
-    monthCalendar:types.maybeNull(types.late(() => MonthCalendarState)),
+    monthCalendarState:types.optional(types.late(() => MonthCalendarState), {}),
   })
+  .actions(self =>({
+    setMonthCalendar(monthCalendarJsonObj){
+      applySnapshot(self.monthCalendarState, monthCalendarJsonObj);
+    }
+
+  }))
 
   
 const MonthCalendarState = types
   .model({
-    days: types.optional(types.array(types.late(() => DayBoundaryElement)), [])
+    dayBoundaryElements: types.optional(types.array(types.late(() => DayBoundaryElement)), [])
   })
 
 
@@ -104,7 +117,7 @@ const DayBoundaryElement = types
     dayNumber: types.integer,
     dayOrder: types.integer,
     isActive: types.boolean,
-    isCurrent: types.boolean,
+    isCurrentDay: types.boolean,
     hasMoreEvents: types.optional(types.boolean, false),
     tasks: types.optional(types.array( types.late(() => MonthTaskBoundaryElement) ), [])
   })

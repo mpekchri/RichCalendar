@@ -7,8 +7,8 @@ export const setupStore = (useDummyData=true) => {
         const jsonData = {
             initialLoad:true,
             calendarStore:{
-                monthCalendar:{
-                    days:createDays()
+                monthCalendarState:{
+                    dayBoundaryElements:createDays()
                 }
             },
             navOptionsStore: {

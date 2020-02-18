@@ -2,7 +2,7 @@ import React from 'react';
 import '../styles/components/dayofmonth.scss';
 
 
-export default class MonthGUI extends React.Component{
+export default class DayOfMonthGUI extends React.Component{
     render() {
       const data = this.props.dayData;
       const dayNumber = data.dayNumber;
@@ -62,7 +62,7 @@ export default class MonthGUI extends React.Component{
       if(dayData.isActive){
         dayClassName='activeday';
       }
-      if(dayData.isCurrent){
+      if(dayData.isCurrentDay){
         dayClassName='currentday';
       }
       return dayClassName;

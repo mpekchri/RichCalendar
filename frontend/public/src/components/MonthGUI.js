@@ -8,10 +8,7 @@ import {observer, inject} from "mobx-react";
 @observer
 export default class MonthGUI extends React.Component{
     render() {
-      const {days} = this.props.mainStore.calendarStore.monthCalendar;
-      if(days == undefined){
-        // this.props.mainStore.loadMonthData()
-      }
+      const {dayBoundaryElements} = this.props.mainStore.calendarStore.monthCalendarState;
       const arrayOfX = [1,2,3,4,5,6,7];
       const arrayOfY = [1,2,3,4,5,6];
       const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -32,7 +29,7 @@ export default class MonthGUI extends React.Component{
                     return(
                       <div className="singleDayInMonthCalendar" key={'row - '.concat(row)}>
                         <Day
-                          dayData={days[x*7 + y]}
+                          dayData={dayBoundaryElements[x*7 + y]}
                         />
                       </div>
                     )
