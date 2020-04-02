@@ -1,0 +1,91 @@
+openapi: "3.0.0"
+info:
+  version: '1.0.0'
+  title: 'Auth API'
+  description: "
+    Auth API provides the necessary endpoints in order to authenticate a Calendar's app user.
+  "
+  contact:
+    name: Christopher Bekos
+    email: bekos.christopher@gmail.com
+    
+servers: 
+  - url: https://dev.calendar.com/v1
+    description: Development Server
+  
+  - url: https://prod.calendar.com/v1
+    description: Production Server
+  
+paths:
+  /auth-api/login:
+    post:
+      description: Returns a token, depending on whether user's credentials where correct or not.
+      requestBody:
+        description: Desc
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCredentials'
+            example: {
+              username: 'dummyAdmin',
+              password: '1QJhbiLQiLC1QiJhbGci'
+            }  
+      responses:
+        '200':
+          description: Server has procced user's credential's and returns a token if login was successful, otherwise returns an error message
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/AuthToken'
+                  - $ref: '#/components/schemas/AuthFailed'
+              examples: 
+                ex1: 
+                  value:
+                    token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9'
+                ex2:
+                  value:
+                    error: "username or/and password are incorrect."
+  /auth-api/logout:
+    post:
+      description: TO-DO
+        
+components:
+  schemas:
+    AuthToken:
+      type: object
+      readOnly: true
+      properties:
+        token: 
+          type: string
+      
+    AuthFailed:
+      type: object
+      readOnly: true
+      properties:
+        error:
+          type: string
+      
+    UserCredentials:
+      type: object
+      properties:
+        username: 
+          type: string
+        password:
+          type: string
+          description: The hash created using user's password
+          
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      # bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+      
+      
+      
+      
+      
+      
+      
+      

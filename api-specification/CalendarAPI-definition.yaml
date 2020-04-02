@@ -1,0 +1,226 @@
+openapi: "3.0.0"
+info:
+  version: '1.0.0'
+  title: 'Calendar API'
+  description: "
+    Calendar API provides the necessary endpoints in order to describe the communication between a caldendar's frontend and backend instance.
+  "
+  contact:
+    name: Christopher Bekos
+    email: bekos.christopher@gmail.com
+    
+servers: 
+  - url: https://dev.calendar.com/v1
+    description: Development Server
+  
+  - url: https://prod.calendar.com/v1
+    description: Production Server
+    
+paths:
+  /calendar-api/current-date:
+    get:
+      description: An endpoint to receive the current date from the server. Requires no authentication
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Returns a js DATE object, representing the current date
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  date: 
+                    type: string
+                    format: date-time
+                    example: '2017-07-21T17:32:28Z'
+  
+  /calendar-api/users:
+    get:
+      description: TO-DO
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: TO-DO
+          
+  /calendar-api/groups:
+    get:
+      description: TO-DO
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: TO-DO
+                  
+  /calendar-api/filters:
+    post:
+      description: Provides the server with a bunch of filters and a expects a CalendarStore instance in response
+      security:
+        - bearerAuth: []
+      parameters: 
+        - in: query
+          name: calendarView
+          required: true
+          schema:
+            type: string
+            enum: [Year, Month, Week, Day]
+        - in: query
+          name: initialLoad
+          schema:
+            type: boolean
+      requestBody:
+        description: filter object
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Filters'
+      responses:
+        '200':
+          description: TO-DO
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarStore'
+        '401':
+          description: Unauthorized, user must login before gaining access to such a resource
+            
+          
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'alexander'
+        id:
+          type: string
+          example: 'user_uid'
+          
+    Group:
+      type: object
+      properties:
+        name:
+          type: string
+          example: '1o ΕΓ'
+        id:
+          type: string
+          example: 'group_uid'
+    
+    Filters:
+      type: object
+      readOnly: true
+      properties:
+        filterStore:
+          type: object
+          properties:
+            taskVisibility:
+              type: array
+              items:
+                type: string
+                enum: ['OwnTasks', 'TasksThatConcernMe', 'GroupTasks', 'SubsistentsTasks', 'ForemenTasks', 'AllTasks']
+            from:
+              type: string
+              format: date
+              example: '2017-07-21'
+            to:
+              type: string
+              format: date
+              example: '2018-08-22'
+            eventStatus:
+              type: array
+              items:
+                type: string
+                enum: ['completed','pending','notStarted','cancelled']
+            users:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+            usersConcerned:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+            groups:
+              type: array
+              items:
+                $ref: '#/components/schemas/Group'
+            groupsConcerned:
+              type: array
+              items:
+                $ref: '#/components/schemas/Group'
+            taskPriority:
+              type: array
+              items:
+                type: string
+                enum: ['HST', 'H', 'M', 'L', 'R']
+          
+        searchText:
+          type: string
+          example: 'some task topic'
+          
+        selectedDate:
+          type: string
+          format: date
+          example: '2017-07-21'
+    
+    CalendarStore:
+      type: object
+      properties:
+        yearCalendarState: 
+          type: object
+        monthCalendarState:
+          $ref: '#/components/schemas/MonthCalendarState'
+        dayCalendarState:
+          type: object
+          
+    MonthCalendarState:
+      type: object
+      properties:
+        dayBoundaryElements:
+          $ref: '#/components/schemas/DayBoundaryElement'
+          
+    DayBoundaryElement:
+      type: object
+      properties:
+        dayOrder:
+          type: integer
+        dayNumber:
+          type: integer
+        isActive:
+          type: boolean
+        isCurrentDay:
+          type: boolean
+        hasWarning:
+          type: boolean
+        containsMoreThan3Events:
+          type: boolean
+        visibleTasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/MonthTaskBoundaryElement'
+          maxItems: 3
+          
+    MonthTaskBoundaryElement:
+      type: object
+      properties:
+        taskId: 
+          type: string
+        priority:
+          type: string
+          enum: ['HST', 'H', 'M', 'L', 'R']
+        displayOrder:
+          type: integer
+          minimum: 1
+          maximum: 3
+          example: 1
+          
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      # bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+          
+          
+          
