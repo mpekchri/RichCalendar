@@ -1,0 +1,11 @@
+version: "3.5"
+services:
+  fend:
+    build: ./frontend
+    ports:
+      - 8080:8080
+
+  bend:
+    build: ./backend
+    ports:
+      - 8000:8000
