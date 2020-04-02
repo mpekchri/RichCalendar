@@ -27,12 +27,12 @@ class Filters(APIView):
     def post(self, request):
         if request.user.is_authenticated:
             parameters = request.query_params
-            calendarView = parameters['calendarView']
-            initialLoad = parameters['initialLoad']
+            calendarView = parameters.get('calendarView')
+            initialLoad = parameters.get('initialLoad')
             if calendarView == "Month":
                 filterObject = request.data
-                selectedDate = filterObject['selectedDate'] if filterObject['selectedDate'] is not None else datetime.now().date()
-                # print(selectedDate)
+                selectedDate = filterObject.get('selectedDate')
+                selectedDate = selectedDate if selectedDate is not None else datetime.now().date()
                 tasks = BackendMainController.loadMonthTasks(
                     filters=None,
                     searchText=None,
